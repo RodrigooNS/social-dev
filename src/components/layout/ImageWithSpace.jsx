@@ -11,6 +11,7 @@ const StyledImage = styled.div`
   background-image: url('/${BACKGROUND_IMG}');
   background-position: center;
   background-repeat: no-repeat;
+  background-size: cover;
 
 
   width: 100%;
@@ -23,18 +24,24 @@ const StyledImage = styled.div`
 
 const StyledContainer = styled.div`
   background-color: ${props => props.theme.white};
-  padding: 30px;
+  padding: 30px 50px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+  width: 60%;
 
   @media (min-width: ${WIDTH_BREAK}) {
-    min-width: calc(${WIDTH_BREAK} - 60px);
+    min-width: calc(${WIDTH_BREAK} - 100px);
   }
 
   @media (max-width: ${WIDTH_BREAK}) {
     width: 100%;
+  }
+
+  &:before, &:after {
+    content: '';
+    margin: auto;
   }
 `
 
