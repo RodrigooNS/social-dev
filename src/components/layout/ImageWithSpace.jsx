@@ -1,6 +1,6 @@
 import styled from "styled-components"
 
-const WIDTH_BREAK = '600px'
+const WIDTH_BREAK = '700px'
 const BACKGROUND_IMG = 'coffee-background.jpg'
 
 const StyledFlex = styled.div`
@@ -24,6 +24,10 @@ const StyledImage = styled.div`
 const StyledContainer = styled.div`
   background-color: white;
   padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
   @media (min-width: ${WIDTH_BREAK}) {
     min-width: calc(${WIDTH_BREAK} - 60px);
