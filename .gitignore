@@ -1,3 +1,4 @@
 node_modules
 .next
 teste.css
+.env.local
