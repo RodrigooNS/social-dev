@@ -34,7 +34,9 @@ function LoginPage () {
         <Form>
           <Input label="Email ou usuário" type="email" />
           <Input label="Senha" type="password" />
-          <Button>Entrar</Button>
+          <Link href="/" passHref>
+            <Button as="a">Entrar</Button>
+          </Link>
         </Form>
         <Text>Não possui uma conta? <Link href="/signup">Faça seu cadastro</Link></Text>
       </FormContainer>

@@ -6,13 +6,15 @@ const Button = styled.button`
   border-radius: 10px;
   border: 0;
   font-weight: bold;
+  text-align: center;
   color: ${props => props.theme.white};
   font-size: 16px;
   cursor: pointer;
   transition: all 0.2s;
 
   :hover {
-    background-color: ${props => props.theme.primaryHover}
+    background-color: ${props => props.theme.primaryHover};
+    color: ${props => props.theme.white}
   }
 `
 export default Button
