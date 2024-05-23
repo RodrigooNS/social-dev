@@ -9,7 +9,7 @@ const PostContainer = styled.div`
   padding: 20px 40px;
 
   @media (max-width: 500px) {
-    padding: 10px;
+    padding: 20px 10px;
   }
 `
 const Text = styled.p`
