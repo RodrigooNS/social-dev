@@ -1,9 +1,11 @@
 import Joi from "joi"
+import { withIronSessionApiRoute } from "iron-session/next"
 
 import createHandler from "../../../lib/middlewares/nextConnect"
 import validate from "../../../lib/middlewares/validation"
 
 import { userSignup } from "../../../modules/user/userService"
+import { ironConfig } from "../../../lib/middlewares/ironSession"
 
 const postSchema = Joi.object({
   name: Joi.string().required().max(30),
@@ -17,7 +19,14 @@ const signup = createHandler()
   .post(validate({ body: postSchema }), async (req, res) => {
     try {
       const user = await userSignup(req.body)
-      res.status(201).json(user)
+
+      req.session.user = {
+        id: user._id,
+        user: user.user
+      }
+      await req.session.save()
+
+      res.status(201).json({ ok: true })
     } catch (err) {
       console.error(err)
       res.status(500)
@@ -25,4 +34,4 @@ const signup = createHandler()
     }
   })
 
-export default signup
+export default withIronSessionApiRoute(signup, ironConfig)
