@@ -11,3 +11,8 @@ export const signupSchema = Joi.object({
   password: Joi.string().required().max(50).message(maxMessage).min(8).message(minMessage)
 })
 
+export const loginSchema = Joi.object({
+  userOrEmail: Joi.string().required(),
+  password: Joi.string().required().max(50).message(maxMessage).min(8).message(minMessage)
+})
+
