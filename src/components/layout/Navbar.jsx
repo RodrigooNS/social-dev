@@ -1,5 +1,7 @@
 import Link from "next/link";
 import styled from "styled-components";
+import axios from "axios";
+import { useRouter } from "next/router";
 
 const StyledNavbvar = styled.div`
   background-color: ${props => props.theme.white};
@@ -19,12 +21,23 @@ const StyledLogo = styled.span`
   font-weight: bold;
 `
 
+const StyledLogout = styled.a`
+  cursor: pointer;
+`
+
 function Navbar () {
+  const router = useRouter()
+
+  const handleLogout = async () => {
+    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/user/logout`)
+    router.push('/login')
+  }
+
   return (
     <StyledNavbvar>
       <StyledLogo>#SocialDev</StyledLogo>
       <div>
-        <Link href="/login">Desconectar</Link>
+        <StyledLogout onClick={handleLogout}>Desconectar</StyledLogout>
       </div>
     </StyledNavbvar>
   )
