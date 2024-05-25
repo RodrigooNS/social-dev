@@ -12,24 +12,41 @@ const StyledLabel = styled.p`
 
 `
 
+const getBorderColor = (props) => props.error ? props.theme.error : props.theme.inputBorder
+
 const StyledInput = styled.input`
   width: 100%;
-  border: 1px solid ${props => props.theme.inputBorder};
+  border: 1px solid ${props => getBorderColor(props)};
   background-color: ${props => props.theme.inputBackground};
   padding: 15px 20px;
   box-sizing: border-box;
   border-radius: 10px;
+
+  &:focus, &:active {
+    border: 1px solid ${props => getBorderColor(props)};
+    outline: 1px solid ${props => getBorderColor(props)};
+  }
 `
 
-const Input = forwardRef(
-  ({ label, ...props }, ref) => {
-    return (
-      <InputContainer>
-        <StyledLabel>{label}</StyledLabel>
-        <StyledInput {...props} ref={ref} />
-      </InputContainer>
-    )
-  }
-)
+const ErrorLabel = styled.span`
+  color: ${props => props.theme.error};
+  font-weight: bold;
+  font-size: 14px;
+`
+
+const errorMessage = {
+  'string.empty': 'Este campo é obrigatório',
+  'string.email': 'Digite um e-mail válido'
+}
+
+const Input = forwardRef(({ label, error, ...props }, ref) => {
+  return (
+    <InputContainer>
+      <StyledLabel>{label}</StyledLabel>
+      <StyledInput error={error} {...props} ref={ref} />
+      {error && <ErrorLabel>{errorMessage[error.type] || error.message}</ErrorLabel>}
+    </InputContainer>
+  )
+})
 
 export default Input
