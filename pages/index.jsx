@@ -1,12 +1,15 @@
+import { useEffect, useState } from "react"
 import styled from "styled-components"
 import { withIronSessionSsr } from "iron-session/next"
 import { ironConfig } from "../lib/middlewares/ironSession"
+import axios from "axios"
 
 import Navbar from "../src/components/layout/Navbar"
 import Container from "../src/components/layout/Container"
 import CreatePost from "../src/components/cards/CreatePost"
 import Post from "../src/components/cards/Post"
 import H3 from "../src/components/typography/H3"
+import react from "react"
 
 const Content = styled.div`
   margin 50px 0;
@@ -29,7 +32,17 @@ const RefreshPostsContainer = styled.div`
 `
 
 function HomePage ({ user }) {
-  console.log(user)
+  const [data, setData] = useState([])
+
+  const handlePosts = async () => {
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/post`)
+    setData(response.data)
+  }
+
+  useEffect(() => {
+    handlePosts()
+  }, [])
+
   return (
     <>
       <Navbar />
@@ -40,9 +53,17 @@ function HomePage ({ user }) {
           <RefreshPostsContainer>
             <RefreshPosts>Atualizar postagens</RefreshPosts>
           </RefreshPostsContainer>
-        <Post />
-        <Post />
-        <Post />
+        {
+          data.map(post => 
+            <Post
+              key={post._id}
+              user={post.createdBy.user}
+              date={post.createdDate}
+              text={post.text}
+            />
+          )
+        }
+        
         </Container>
       </Content>
     </>
@@ -61,7 +82,6 @@ export const getServerSideProps = withIronSessionSsr(
         }
       }
     }
-    console.log(user)
 
     return {
       props: {

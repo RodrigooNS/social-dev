@@ -1,4 +1,5 @@
 import styled from "styled-components"
+import moment from "moment"
 
 const PostContainer = styled.div`
   background-color: ${props => props.theme.white};
@@ -24,12 +25,12 @@ const TextContainer = styled.p`
   margin-top: 10px;
 `
 
-function Post () {
+function Post ({ user, date, text }) {
   return (
     <PostContainer>
-      <StyledUsername>@nick</StyledUsername>
-      <StyledDate>23/05/2024</StyledDate>
-      <TextContainer>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it </TextContainer>
+      <StyledUsername> @{user} </StyledUsername>
+      <StyledDate> {moment(date).format('LLL')} </StyledDate>
+      <TextContainer> {text} </TextContainer>
     </PostContainer>
   )
 }
