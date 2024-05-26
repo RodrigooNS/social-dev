@@ -13,6 +13,7 @@ import H2 from "../src/components/typography/H2"
 import H4 from "../src/components/typography/H4"
 import Button from "../src/components/inputs/Button"
 import Input from "../src/components/inputs/Input"
+import { useState } from "react"
 
 const FormContainer = styled.div`
   margin-top: 60px;
@@ -36,29 +37,27 @@ function LoginPage () {
     resolver: joiResolver(loginSchema)
   })
 
+  const [loading, setLoading] = useState(false)
+
   const onSubmit = async (data) => {
+    setLoading(true)
     try {
-      console.log('Submitting data:', data)
       const { status } = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/user/login`, data)
-      console.log('Status:', status)
       if (status === 200) {
         router.push('/')
       }
-    } catch (error) {
-      console.error('Error response:', error.response)
-      const { response } = error
-      if (response && response.data === 'user not found') {
+    } catch ({ response }) {
+      if (response.data === 'user not found') {
         setError('userOrEmail', {
           message: 'Usuário ou e-mail não encontrado'
         })
-      } else if (response && response.data === 'incorrect password') {
+      } if (response.data === 'incorrect password') {
         setError('password', {
           message: 'Senha incorreta'
         })
-      } else {
-        console.error('Unexpected error:', error)
       }
     }
+    setLoading(false)
   }
 
   return (
@@ -70,7 +69,13 @@ function LoginPage () {
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Input label="Usuário ou e-mail" name="userOrEmail" control={control} />
           <Input label="Senha" type="password" name="password" control={control} />
-          <Button type="submit" disabled={Object.keys(errors).length > 0}>Entrar</Button>
+          <Button 
+            type="submit" 
+            disabled={Object.keys(errors).length > 0}
+            loading={loading}
+          >
+              Entrar
+          </Button>
         </Form>
         <Text>Não possui uma conta? <Link href="/signup">Faça seu cadastro</Link></Text>
       </FormContainer>
