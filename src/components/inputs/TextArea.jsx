@@ -1,7 +1,7 @@
 import styled from "styled-components";
+import { useController } from "react-hook-form";
 
-
-const TextArea = styled.textarea`
+const StyledTextArea = styled.textarea`
   resize: none;
   width: 100%;
   padding: 20px;
@@ -12,5 +12,14 @@ const TextArea = styled.textarea`
   font-family: 'Roboto', sans-serif;
   font-size: 14px;
 `
+
+const TextArea = ({ name, control, defaultValue ='', ...props }) => {
+  const { 
+    field: { value, onChange }
+   } = useController ({ name, control, defaultValue })
+  return(
+    <StyledTextArea {...props} value={value} onChange={onChange} />
+  )
+}
 
 export default TextArea
