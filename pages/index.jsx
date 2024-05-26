@@ -37,6 +37,7 @@ const fetcher = url => axios.get(url).then(res => res.data)
 function HomePage ({ user }) {
   const { data } = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/api/post`, fetcher)
 
+
   return (
     <>
       <Navbar />
@@ -48,9 +49,11 @@ function HomePage ({ user }) {
           data?.map(post => 
             <Post
               key={post._id}
+              id={post._id}
               user={post.createdBy.user}
               date={post.createdDate}
               text={post.text}
+              isOwner={post.createdBy._id === user.id}
             />
           )
         }

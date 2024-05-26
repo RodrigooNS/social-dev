@@ -50,7 +50,6 @@ function CreatePost ({ user }) {
       reset()
       mutate(`${process.env.NEXT_PUBLIC_API_URL}/api/post`)
     }
-    console.log(response.data)
   }
 
   return (

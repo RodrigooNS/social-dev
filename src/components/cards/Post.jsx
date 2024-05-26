@@ -1,5 +1,7 @@
 import styled from "styled-components"
 import moment from "moment"
+import axios from "axios"
+import { useSWRConfig } from "swr"
 
 import Menu from "../navigation/Menu"
 
@@ -31,32 +33,46 @@ const MenuContainer = styled.div`
   float: right
 `
 
-function Post ({ user, date, text }) {
-  
-  const handlePostEdit = () => {
+function Post ({ user, date, text, isOwner, id }) {
+  const { mutate } = useSWRConfig()
+
+  const handlePostEdit = async () => {
     console.log("HANDLE POST EDIT")
   }
 
-  const handlePostDelete = () => {
-    console.log("HANDLE POST DELETE")
+  const handlePostDelete = async () => {
+    try {
+      const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/post`, {
+        data: {
+          id
+        }
+      })
+      if (response.status === 200)
+        mutate(`${process.env.NEXT_PUBLIC_API_URL}/api/post`)
+    } catch(err) {
+      console.error(err)
+    }
   }
   
   return (
     <PostContainer>
-      <MenuContainer>
-        <Menu 
-          options={[
-            {
-              text: 'Editar',
-              onClick: handlePostEdit
-            },
-            {
-              text: 'Deletar',
-              onClick: handlePostDelete
-            }
-          ]} 
-        />
-      </MenuContainer>
+      {
+        isOwner &&
+        <MenuContainer>
+          <Menu 
+            options={[
+              {
+                text: 'Editar',
+                onClick: handlePostEdit
+              },
+              {
+                text: 'Deletar',
+                onClick: handlePostDelete
+              }
+            ]} 
+          />
+        </MenuContainer>
+      }
       <StyledUsername> @{user} </StyledUsername>
       <StyledDate> {moment(date).format('LLL')} </StyledDate>
       <TextContainer> {text} </TextContainer>
