@@ -38,19 +38,25 @@ function LoginPage () {
 
   const onSubmit = async (data) => {
     try {
+      console.log('Submitting data:', data)
       const { status } = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/user/login`, data)
+      console.log('Status:', status)
       if (status === 200) {
         router.push('/')
       }
-    } catch ({ response }) {
-      if (response.data === 'user not found') {
+    } catch (error) {
+      console.error('Error response:', error.response)
+      const { response } = error
+      if (response && response.data === 'user not found') {
         setError('userOrEmail', {
           message: 'Usuário ou e-mail não encontrado'
         })
-      } if (response.data === 'incorrect password') {
+      } else if (response && response.data === 'incorrect password') {
         setError('password', {
           message: 'Senha incorreta'
         })
+      } else {
+        console.error('Unexpected error:', error)
       }
     }
   }
