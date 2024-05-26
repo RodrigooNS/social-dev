@@ -3,6 +3,7 @@ import styled from "styled-components"
 import { withIronSessionSsr } from "iron-session/next"
 import { ironConfig } from "../lib/middlewares/ironSession"
 import axios from "axios"
+import useSWR from "swr"
 
 import Navbar from "../src/components/layout/Navbar"
 import Container from "../src/components/layout/Container"
@@ -31,17 +32,10 @@ const RefreshPostsContainer = styled.div`
   justify-content: right;
 `
 
+const fetcher = url => axios.get(url).then(res => res.data)
+
 function HomePage ({ user }) {
-  const [data, setData] = useState([])
-
-  const handlePosts = async () => {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/post`)
-    setData(response.data)
-  }
-
-  useEffect(() => {
-    handlePosts()
-  }, [])
+  const { data } = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/api/post`, fetcher)
 
   return (
     <>
@@ -54,7 +48,7 @@ function HomePage ({ user }) {
             <RefreshPosts>Atualizar postagens</RefreshPosts>
           </RefreshPostsContainer>
         {
-          data.map(post => 
+          data?.map(post => 
             <Post
               key={post._id}
               user={post.createdBy.user}
