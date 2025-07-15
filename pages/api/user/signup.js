@@ -1,36 +1,48 @@
-import { withIronSessionApiRoute } from "iron-session/next"
+import { withIronSessionApiRoute } from 'iron-session/next';
 
-import createHandler from "../../../lib/middlewares/nextConnect"
-import validate from "../../../lib/middlewares/validation"
+import mongoose from 'mongoose';
 
-import { userSignup } from "../../../modules/user/userService"
-import { signupSchema } from "../../../modules/user/user.schema"
-import { ironConfig } from "../../../lib/middlewares/ironSession"
+import { userSignup } from '../../../modules/user/userService';
+import { signupSchema } from '../../../modules/user/user.schema';
+import { ironConfig } from '../../../lib/middlewares/ironSession';
 
-const signup = createHandler()
+async function handler(req, res) {
+  if (req.method !== 'POST') return res.status(405).end();
 
-signup.post(validate({ body: signupSchema }), async (req, res) => {
+  const { error } = signupSchema.validate(req.body);
+  if (error) {
+    return res
+      .status(400)
+      .json({ message: error.message, details: error.details });
+  }
+
+  console.log(req.body);
+
+  if (mongoose.connection.readyState !== 1) {
+    await mongoose.connect(process.env.MONGODB_URI);
+  }
+
   try {
-    const user = await userSignup(req.body)
+    const user = await userSignup(req.body);
 
     req.session.user = {
       id: user._id,
-      user: user.user
-    }
-    await req.session.save()
+      user: user.user,
+    };
+    await req.session.save();
 
-    res.status(201).json({ ok: true })
+    res.status(201).json({ ok: true });
   } catch (err) {
     if (err.code === 11000) {
       return res.status(400).send({
         code: 11000,
-        duplicatedKey: Object.keys(err.keyPattern)[0]
-      })
+        duplicatedKey: Object.keys(err.keyPattern)[0],
+      });
     }
-    console.error(err)
-    res.status(500)
-    throw err
+    console.error(err);
+    res.status(500);
+    throw err;
   }
-})
+}
 
-export default withIronSessionApiRoute(signup, ironConfig)
+export default withIronSessionApiRoute(handler, ironConfig);
